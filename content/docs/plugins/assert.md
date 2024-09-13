@@ -226,12 +226,12 @@ await assert.rejects(() => {
   throw new Error('')
 }) // passes
 
-await assert.rejects(() => {
-  async () => throw new HttpError('Resource not found')
+await assert.rejects(async () => {
+  throw new HttpError('Resource not found')
 }, HttpError) // passes
 
-await assert.rejects(() => {
-  async () => throw new HttpError('Resource not found')
+await assert.rejects(async () => {
+  throw new HttpError('Resource not found')
 }, 'Resource not found') // passes
 ```
 
