@@ -438,13 +438,13 @@ arrays and objects.
 - See [notDeepInclude](#notdeepinclude) for nested object properties.
 
 ```ts
-assert.include(
+assert.notInclude(
   { id: 1, name: 'virk' },
-  { name: 'virk' }
+  { name: 'harminder' }
 ) // passes
 
-assert.include([1, 2, 3], 2) // passes
-assert.include('hello world', 'hello') // passes
+assert.notInclude([1, 2, 3], 4) // passes
+assert.notInclude('hello world', 'japa') // passes
 ```
 
 | Name | Type |
