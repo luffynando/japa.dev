@@ -186,6 +186,10 @@ plugins: [
       event: 'onError',
       cleanOutputDirectory: true,
       outputDirectory: join(__dirname, '..')
+    },
+    assertions: {
+      timeout: 5000
+      pollIntervals: [100, 250, 500, 1000]
     }
   })
 ]
@@ -247,6 +251,34 @@ browserClient({
   }
 })
 ```
+
+### assertions
+The `assertions` property lets you control the behaviour of the [built-in assertions](#assertions-1).
+
+```ts
+import { join } from 'path'
+
+browserClient({
+  assertions: {
+    timeout: 5000
+    pollIntervals: [100, 250, 500, 1000]
+  }
+})
+```
+
+Use `timeout` to control for how long assertions will be retried before they fail.
+
+The `pollIntervals` setting allows more fine-grained control over retries by determining for how long assertions will wait before each retry.
+For instance with `pollIntervals: [50, 100, 250]` and `timeout: 750`, the following behaviour can be expected:
+
+| Total time   | Interval                       | Action          |
+| ------------ | ------------------------------ | --------------- |
+| 0ms          | -                              | Initial attempt |
+| ~50ms        | 50ms                           | Retry 1         |
+| ~150ms       | 100ms                          | Retry 2         |
+| ~400ms       | 250ms                          | Retry 3         |
+| ~650ms       | 250ms (last interval repeated) | Retry 4         |
+| ~750ms       | -                              | Assertion fails |
 
 ## CLI flags
 You can use the following CLI flags to control the behavior of tests.
@@ -527,7 +559,11 @@ declare module 'playwright' {
 ```
 
 ## Assertions
-You can write assertions for a page using the `page.assert*` methods. All assertion methods are asynchronous, so `await` them.
+You can write assertions for a page using the `page.assert*` methods.
+
+The assertion methods will auto-retry until they succeed or time out. Therefore they work well even when the page does not update right away, making them suitable for testing single page applications (SPAs) and async functionality. For more details see [assertions](#assertions).
+
+All assertion methods are asynchronous, so `await` them.
 
 ### assertExists
 Assert an element to exist. The method accepts either a string selector or the locator object.
